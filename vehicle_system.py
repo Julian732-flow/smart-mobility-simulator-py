@@ -38,3 +38,36 @@ class Vehiculo:
     def obtener_informacion(self):
         """Returns the current state of the object as a formatted string."""
         return f"Vehicle: {self.brand} {self.model} | Speed: {self.current_speed} km/h"
+        # =============================================================================
+# 2. SUBCLASSES - DEMONSTRATING POLYMORPHISM & OVERRIDING
+# =============================================================================
+
+class AutoElectrico(Vehiculo):
+    """
+    Child class representing Electric Vehicles. 
+    It overrides methods to implement specific EV physics.
+    """
+    def acelerar(self, turbo=0, terrain="normal"):
+        # Executes parent logic while adding specific electric torque bonus
+        super().acelerar(turbo, terrain)
+        self.current_speed += 5 
+        return f"[Electric] {self.brand} accelerating silently (Instant Torque)."
+
+    def detener(self):
+        # Total method overriding for regenerative braking logic
+        self.current_speed = 0
+        return f"[Electric] {self.brand} stopped with Regenerative Braking."
+
+class Moto(Vehiculo):
+    """Specialized subclass for high-performance Motorcycles."""
+    def acelerar(self, turbo=0, terrain="normal"):
+        # Polymorphism: Motorcycles ignore base physics for faster acceleration
+        self.current_speed += (25 + (turbo * 1.5))
+        return f"[Motorcycle] {self.brand} reaches high speed quickly!"
+
+class Camion(Vehiculo):
+    """Specialized subclass for heavy-duty Truck simulation."""
+    def acelerar(self, turbo=0, terrain="normal"):
+        # Polymorphism: High mass results in significantly lower acceleration
+        self.current_speed += (5 + (turbo * 0.2))
+        return f"[Truck] {self.brand} accelerating slowly due to heavy load."
