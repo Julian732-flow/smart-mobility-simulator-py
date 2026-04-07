@@ -71,3 +71,87 @@ class Camion(Vehiculo):
         # Polymorphism: High mass results in significantly lower acceleration
         self.current_speed += (5 + (turbo * 0.2))
         return f"[Truck] {self.brand} accelerating slowly due to heavy load."
+        # =============================================================================
+# 3. GUI LAYER (TKINTER) - PROFESSIONAL INTERFACE (ENGLISH)
+# =============================================================================
+
+class SmartMobilityUI:
+    """
+    Responsible for the Presentation Layer. 
+    Decouples the UI logic from the core Object-Oriented models.
+    """
+    def __init__(self, window):
+        self.window = window
+        self.window.title("Smart Mobility Simulator v1.0")
+        self.window.geometry("550x550")
+        
+        # POLYMORPHIC LIST: Array containing different object types.
+        # This allows us to treat all instances as 'Vehiculo' via Polymorphism.
+        self.vehicles = [
+            AutoElectrico("Tesla", "Model 3"),
+            Moto("Kawasaki", "Ninja 650"),
+            Camion("Kenworth", "T680")
+        ]
+        
+        self.setup_ui()
+
+    def setup_ui(self):
+        """Builds all graphical widgets using English labels as per requirements."""
+        # Main Title Header
+        ttk.Label(self.window, text="Vehicle Simulation Control", font=("Arial", 14, "bold")).pack(pady=15)
+
+        # Action Buttons Container (Frame)
+        btn_frame = ttk.Frame(self.window)
+        btn_frame.pack(pady=10)
+
+        # UI Triggers for Polymorphic tests
+        ttk.Button(btn_frame, text="Accelerate All", command=self.run_acceleration).grid(row=0, column=0, padx=10)
+        ttk.Button(btn_frame, text="Stop All", command=self.run_stop).grid(row=0, column=1, padx=10)
+
+        # Output Display (Simulation Log)
+        ttk.Label(self.window, text="Execution Log:").pack(anchor="w", padx=25)
+        self.display = tk.Text(self.window, height=18, width=60, bg="#1e1e1e", fg="#00ff00")
+        self.display.pack(pady=10, padx=20)
+        
+        # Utility button to clear terminal
+        ttk.Button(self.window, text="Clear Log", command=self.clear_display).pack(pady=5)
+
+    def run_acceleration(self):
+        """
+        SINGLE LOOP POLYMORPHISM TEST:
+        Calls the same method name 'acelerar' for all objects in the list.
+        Each object responds according to its specific subclass implementation.
+        """
+        self.display.insert(tk.END, ">>> INITIATING SPEED TEST...\n")
+        
+        # Iterating through objects of different classes
+        for v in self.vehicles:
+            # Runtime Polymorphism: Python resolves the method at execution time
+            result = v.acelerar(turbo=10, terrain="normal") 
+            info = v.obtener_informacion()
+            # Pushing results to the UI Log
+            self.display.insert(tk.END, f"{result}\n{info}\n\n")
+            
+        self.display.see(tk.END)
+
+    def run_stop(self):
+        """Executes emergency stopping sequence for all fleet objects."""
+        self.display.insert(tk.END, ">>> EMERGENCY BRAKE APPLIED...\n")
+        for v in self.vehicles:
+            msg = v.detener()
+            self.display.insert(tk.END, f"{msg}\n")
+        self.display.insert(tk.END, "Status: All vehicles are stationary.\n\n")
+        self.display.see(tk.END)
+
+    def clear_display(self):
+        """Clears the text area of the UI display."""
+        self.display.delete('1.0', tk.END)
+
+# =============================================================================
+# 4. MAIN ENTRY POINT
+# =============================================================================
+if __name__ == "__main__":
+    # Initializing the Tkinter event loop
+    root = tk.Tk()
+    app = SmartMobilityUI(root)
+    root.mainloop()
